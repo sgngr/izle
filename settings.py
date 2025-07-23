@@ -45,7 +45,6 @@ class Settings():
         root = etree.Element("settings")
         etree.SubElement(root, "last_channel_list").text = "{}".format(
             self.last_channel_list)
-        print(">>>>>>>>>>>>>>>>>>", self.use_legacy_vo )
         if self.use_legacy_vo:
             etree.SubElement(root, "use_legacy_vo").text = "1"
         else:
