@@ -1,0 +1,5 @@
+mpv
+pillow
+lxml
+selenium
+webdriver_manager
