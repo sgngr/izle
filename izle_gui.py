@@ -188,7 +188,6 @@ class StdoutRedirector(object):
 class FrameChannel(ttk.Frame):
     def __init__(self, master, **kwargs):
         self.kwargs = kwargs
-
         self.app = None
         if 'app' in kwargs.keys():
             self.app = kwargs['app']
@@ -295,8 +294,6 @@ class FrameChannel(ttk.Frame):
 
         font1 = tkFont.Font(family='Helvetica', size=-12, weight='normal')
         comboboxWatchlinks = ttk.Combobox(self)
-        # comboboxWatchlinks.grid(
-        #     column=0, row=0, columnspan=4, padx=(2, 10), pady=(2, 2), ipadx=0, ipady=0, sticky=(tk.EW, tk.N))
         comboboxWatchlinks['state'] = 'readonly'
         comboboxWatchlinks['justify'] = 'left'
         comboboxWatchlinks['font'] = font1
@@ -656,182 +653,193 @@ class Shortcuts():
         self.frameShortcuts['relief'] = 'raised'
         self.frameShortcuts['padding'] = (5, 5, 5, 5)
 
-        self.font = tkFont.Font(family='Helvetica', size=-11, weight='normal')
-        
-        self.frameShortcuts.columnconfigure(2, minsize=50)
+        self.font = tkFont.Font(family='Helvetica', size=-11, weight='normal')        
+        self.frameShortcuts.columnconfigure(0, minsize=50)
 
+        labelKeyMouse = ttk.Label(self.frameShortcuts,
+                                  text="Key / Mouse", font=self.font)
+        labelKeyMouse.grid(row=0, column=1,
+                           padx=(0, 1), pady=(0, 1), sticky=tk.EW)
 
-        labelKeyMouse =  ttk.Label(self.frameShortcuts, text="Key / Mouse", font=self.font)
-        labelKeyMouse.grid(row=0, column=0, padx=(0, 1), pady=(0,1), sticky=tk.EW)
-
-        labelKeyMouse['padding'] = (10,0,5,0)
+        labelKeyMouse['padding'] = (10, 0, 5, 0)
         labelKeyMouse['background'] = '#1e94f1'
         labelKeyMouse['foreground'] = 'white'
 
-        
-        labelShortcut =  ttk.Label(self.frameShortcuts, text="Shortcut", font=self.font)
-        labelShortcut.grid(row=0, column=1, padx=(1, 0), pady=(0,1), sticky=tk.EW)
-        
-        
-        labelShortcut['padding'] = (5,0,10,0)
+        labelShortcut = ttk.Label(self.frameShortcuts,
+                                  text="Shortcut", font=self.font)
+        labelShortcut.grid(row=0, column=2,
+                           padx=(1, 0), pady=(0, 1), sticky=tk.EW)
+
+        labelShortcut['padding'] = (5, 0, 10, 0)
         labelShortcut['background'] = '#1e94f1'
         labelShortcut['foreground'] = 'white'
 
-
-
-        rowGUI=1
+        rowGUI = 1
         labelGUI = ttk.Label(self.frameShortcuts, text="GUI", font=self.font)
-        labelGUI.grid(row=rowGUI, column=0, columnspan=3,  pady=(1,0), sticky=(tk.W, tk.N, tk.E, tk.S))
-        
-        labelGUI['padding'] = (0,0,5,0)
+        labelGUI.grid(row=rowGUI, column=0, columnspan=3,
+                      pady=(1, 0), sticky=(tk.W, tk.N, tk.E, tk.S))
+
+        labelGUI['padding'] = (0, 0, 5, 0)
         labelGUI['background'] = '#1e94f1'
         labelGUI['foreground'] = 'white'
-        labelGUI['anchor'] = tk.E
-        
+        labelGUI['anchor'] = tk.W
+
         labelGUI10 = ttk.Label(
             self.frameShortcuts, text="Q", font=self.font)
-        labelGUI10.grid(row=rowGUI+1, column=0, padx=(10, 5), sticky="e")
-        labelGUI11 = ttk.Label(
-            self.frameShortcuts, text="Quit application (izle / Channel editor)", font=self.font)
-        labelGUI11.grid(row=rowGUI+1, column=1, padx=(5, 10), sticky="w")
+        labelGUI10.grid(row=rowGUI+1, column=1, padx=(10, 5), sticky="e")
+        labelGUI11 = ttk.Label(self.frameShortcuts,
+                               text="Quit application (izle / Channel editor)",
+                               font=self.font)
+        labelGUI11.grid(row=rowGUI+1, column=2, padx=(5, 10), sticky="w")
 
         labelGUI20 = ttk.Label(
             self.frameShortcuts, text="Esc", font=self.font)
-        labelGUI20.grid(row=rowGUI+2, column=0, padx=(10, 5), sticky="e")
+        labelGUI20.grid(row=rowGUI+2, column=1, padx=(10, 5), sticky="e")
         labelGUI21 = ttk.Label(
             self.frameShortcuts, text="Close dialog or menu", font=self.font)
-        labelGUI21.grid(row=rowGUI+2, column=1, padx=(5, 10), sticky="w")
-    
+        labelGUI21.grid(row=rowGUI+2, column=2, padx=(5, 10), sticky="w")
+
         labelGUI30 = ttk.Label(
             self.frameShortcuts, text="1 / 2 / 3", font=self.font)
-        labelGUI30.grid(row=rowGUI+3, column=0, padx=(10, 5), sticky="e")
+        labelGUI30.grid(row=rowGUI+3, column=1, padx=(10, 5), sticky="e")
         labelGUI31 = ttk.Label(
             self.frameShortcuts, text="Scale GUI", font=self.font)
-        labelGUI31.grid(row=rowGUI+3, column=1, padx=(5, 10), sticky="w")
-    
+        labelGUI31.grid(row=rowGUI+3, column=2, padx=(5, 10), sticky="w")
 
         labelGUI40 = ttk.Label(
             self.frameShortcuts, text="F / F10", font=self.font)
-        labelGUI40.grid(row=rowGUI+4, column=0, padx=(10, 5), sticky="e")
+        labelGUI40.grid(row=rowGUI+4, column=1, padx=(10, 5), sticky="e")
         labelGUI41 = ttk.Label(
             self.frameShortcuts, text="Toggle full screen", font=self.font)
-        labelGUI41.grid(row=rowGUI+4, column=1, padx=(5, 10), sticky="w")
-
+        labelGUI41.grid(row=rowGUI+4, column=2, padx=(5, 10), sticky="w")
 
         labelGUI50 = ttk.Label(
             self.frameShortcuts, text="L", font=self.font)
-        labelGUI50.grid(row=rowGUI+5, column=0, padx=(10, 5), sticky="e")
+        labelGUI50.grid(row=rowGUI+5, column=1, padx=(10, 5), sticky="e")
         labelGUI51 = ttk.Label(
             self.frameShortcuts, text="Toggle log frame", font=self.font)
-        labelGUI51.grid(row=rowGUI+5, column=1, padx=(5, 10), sticky="w")
-
-
+        labelGUI51.grid(row=rowGUI+5, column=2, padx=(5, 10), sticky="w")
 
         rowChannel = 7
-        labelChannel = ttk.Label(self.frameShortcuts, text="Channel", font=self.font)
-        labelChannel.grid(row=rowChannel, column=0, columnspan=3, sticky=(tk.W, tk.N, tk.E, tk.S))
-        
-        labelChannel['padding'] = (0,0,5,0)
+        labelChannel = ttk.Label(self.frameShortcuts, text="Channel",
+                                 font=self.font)
+        labelChannel.grid(row=rowChannel, column=0, columnspan=3,
+                          sticky=(tk.W, tk.N, tk.E, tk.S))
+
+        labelChannel['padding'] = (0, 0, 5, 0)
         labelChannel['background'] = '#1e94f1'
         labelChannel['foreground'] = 'white'
-        labelChannel['anchor'] = tk.E
-        
-    
-        labelChannel10 = ttk.Label(
-            self.frameShortcuts, text="A", font=self.font)
-        labelChannel10.grid(row=rowChannel+1, column=0, padx=(10, 5), sticky="e")
-        labelChannel11 = ttk.Label(
-            self.frameShortcuts, text="Channel add", font=self.font)
-        labelChannel11.grid(row=rowChannel+1, column=1, padx=(5, 10), sticky="w")
+        labelChannel['anchor'] = tk.W
 
-        labelChannel20 = ttk.Label(
-            self.frameShortcuts, text="E", font=self.font)
-        labelChannel20.grid(row=rowChannel+2, column=0, padx=(10, 5), sticky="e")
-        labelChannel21 = ttk.Label(
-            self.frameShortcuts, text="Channel edit", font=self.font)
-        labelChannel21.grid(row=rowChannel+2, column=1, padx=(5, 10), sticky="w")
+        labelChannel10 = ttk.Label(self.frameShortcuts,
+                                   text="A", font=self.font)
+        labelChannel10.grid(row=rowChannel+1, column=1, padx=(10, 5),
+                            sticky="e")
+        labelChannel11 = ttk.Label(self.frameShortcuts,
+                                   text="Channel add", font=self.font)
+        labelChannel11.grid(row=rowChannel+1, column=2, padx=(5, 10),
+                            sticky="w")
 
-        labelChannel30 = ttk.Label(
-            self.frameShortcuts, text="D", font=self.font)
-        labelChannel30.grid(row=rowChannel+3, column=0, padx=(10, 5), sticky="e")
-        labelChannel31 = ttk.Label(
-            self.frameShortcuts, text="Channel delete", font=self.font)
-        labelChannel31.grid(row=rowChannel+3, column=1, padx=(5, 10), sticky="w")
+        labelChannel20 = ttk.Label(self.frameShortcuts,
+                                   text="E", font=self.font)
+        labelChannel20.grid(row=rowChannel+2, column=1, padx=(10, 5),
+                            sticky="e")
+        labelChannel21 = ttk.Label(self.frameShortcuts,
+                                   text="Channel edit", font=self.font)
+        labelChannel21.grid(row=rowChannel+2, column=2, padx=(5, 10),
+                            sticky="w")
 
-        labelChannel40 = ttk.Label(
-            self.frameShortcuts, text="U", font=self.font)
-        labelChannel40.grid(row=rowChannel+4, column=0, padx=(10, 5), sticky="e")
+        labelChannel30 = ttk.Label(self.frameShortcuts,
+                                   text="D", font=self.font)
+        labelChannel30.grid(row=rowChannel+3, column=1, padx=(10, 5),
+                            sticky="e")
+        labelChannel31 = ttk.Label(self.frameShortcuts,
+                                   text="Channel delete", font=self.font)
+        labelChannel31.grid(row=rowChannel+3, column=2, padx=(5, 10),
+                            sticky="w")
+
+        labelChannel40 = ttk.Label(self.frameShortcuts,
+                                   text="U", font=self.font)
+        labelChannel40.grid(row=rowChannel+4, column=1, padx=(10, 5),
+                            sticky="e")
         labelChannel41 = ttk.Label(self.frameShortcuts,
                                    text="Channel update (m3u8 URL / YouTube watchlinks)",
                                    font=self.font)
-        labelChannel41.grid(row=rowChannel+4, column=1, padx=(5, 10), sticky="w")
+        labelChannel41.grid(row=rowChannel+4, column=2, padx=(5, 10),
+                            sticky="w")
 
-        labelChannel50 = ttk.Label(
-            self.frameShortcuts, text="Left", font=self.font)
-        labelChannel50.grid(row=rowChannel+5, column=0, padx=(10, 5), sticky="e")
-        labelChannel51 = ttk.Label(
-            self.frameShortcuts, text="Previous channel", font=self.font)
-        labelChannel51.grid(row=rowChannel+5, column=1, padx=(5, 10), sticky="w")
+        labelChannel50 = ttk.Label(self.frameShortcuts,
+                                   text="Left", font=self.font)
+        labelChannel50.grid(row=rowChannel+5, column=1, padx=(10, 5),
+                            sticky="e")
+        labelChannel51 = ttk.Label(self.frameShortcuts, 
+                                   text="Previous channel", font=self.font)
+        labelChannel51.grid(row=rowChannel+5, column=2, padx=(5, 10),
+                            sticky="w")
 
-        labelChannel60 = ttk.Label(
-            self.frameShortcuts, text="Right", font=self.font)
-        labelChannel60.grid(row=rowChannel+6, column=0, padx=(10, 5), sticky="e")
-        labelChannel61 = ttk.Label(
-            self.frameShortcuts, text="Next channel", font=self.font)
-        labelChannel61.grid(row=rowChannel+6, column=1, padx=(5, 10), sticky="w")
+        labelChannel60 = ttk.Label(self.frameShortcuts,
+                                   text="Right", font=self.font)
+        labelChannel60.grid(row=rowChannel+6, column=1, padx=(10, 5),
+                            sticky="e")
+        labelChannel61 = ttk.Label(self.frameShortcuts,
+                                   text="Next channel", font=self.font)
+        labelChannel61.grid(row=rowChannel+6, column=2, padx=(5, 10),
+                            sticky="w")
 
         labelChannel70 = ttk.Label(
             self.frameShortcuts, text="O", font=self.font)
-        labelChannel70.grid(row=rowChannel+7, column=0, padx=(10, 5), sticky="e")
-        labelChannel71 = ttk.Label(
-            self.frameShortcuts, text="Load channel list", font=self.font)
-        labelChannel71.grid(row=rowChannel+7, column=1, padx=(5, 10), sticky="w")
+        labelChannel70.grid(row=rowChannel+7, column=1, padx=(10, 5),
+                            sticky="e")
+        labelChannel71 = ttk.Label(self.frameShortcuts,
+                                   text="Load channel list", font=self.font)
+        labelChannel71.grid(row=rowChannel+7, column=2, padx=(5, 10),
+                            sticky="w")
 
         rowPlayer = 16
-        labelPlayer = ttk.Label(self.frameShortcuts, text="Player", font=self.font)
-        labelPlayer.grid(row=rowPlayer, column=0, columnspan=3, sticky=(tk.W, tk.N, tk.E, tk.S))
+        labelPlayer = ttk.Label(self.frameShortcuts, text="Player",
+                                font=self.font)
+        labelPlayer.grid(row=rowPlayer, column=0, columnspan=3,
+                         sticky=(tk.W, tk.N, tk.E, tk.S))
 
-        labelPlayer['padding'] = (0,0,5,0)
+        labelPlayer['padding'] = (0, 0, 5, 0)
         labelPlayer['background'] = '#1e94f1'
         labelPlayer['foreground'] = 'white'
-        labelPlayer['anchor'] = tk.E
+        labelPlayer['anchor'] = tk.W
 
         labelPlayer10 = ttk.Label(self.frameShortcuts,
                                   text="P", font=self.font)
-        labelPlayer10.grid(row=rowPlayer+1, column=0, padx=(10, 5), sticky="e")
+        labelPlayer10.grid(row=rowPlayer+1, column=1, padx=(10, 5), sticky="e")
         labelPlayer11 = ttk.Label(self.frameShortcuts,
                                   text="Toggle Pause / Play", font=self.font)
-        labelPlayer11.grid(row=rowPlayer+1, column=1, padx=(5, 10), sticky="w")
+        labelPlayer11.grid(row=rowPlayer+1, column=2, padx=(5, 10), sticky="w")
 
         labelPlayer20 = ttk.Label(self.frameShortcuts,
                                   text="M", font=self.font)
-        labelPlayer20.grid(row=rowPlayer+2, column=0, padx=(10, 5), sticky="e")
+        labelPlayer20.grid(row=rowPlayer+2, column=1, padx=(10, 5), sticky="e")
         labelPlayer21 = ttk.Label(self.frameShortcuts,
                                   text="Toggle Mute / Unmute", font=self.font)
-        labelPlayer21.grid(row=rowPlayer+2, column=1, padx=(5, 10), sticky="w")
+        labelPlayer21.grid(row=rowPlayer+2, column=2, padx=(5, 10), sticky="w")
 
         labelPlayer30 = ttk.Label(self.frameShortcuts,
                                   text="Up", font=self.font)
-        labelPlayer30.grid(row=rowPlayer+3, column=0, padx=(10, 5), sticky="e")
+        labelPlayer30.grid(row=rowPlayer+3, column=1, padx=(10, 5), sticky="e")
         labelPlayer31 = ttk.Label(self.frameShortcuts,
                                   text="Volume up", font=self.font)
-        labelPlayer31.grid(row=rowPlayer+3, column=1, padx=(5, 10), sticky="w")
+        labelPlayer31.grid(row=rowPlayer+3, column=2, padx=(5, 10), sticky="w")
 
         labelPlayer40 = ttk.Label(self.frameShortcuts,
                                   text="Down", font=self.font)
-        labelPlayer40.grid(row=rowPlayer+4, column=0, padx=(10, 5), sticky="e")
+        labelPlayer40.grid(row=rowPlayer+4, column=1, padx=(10, 5), sticky="e")
         labelPlayer41 = ttk.Label(self.frameShortcuts,
                                   text="Volume down", font=self.font)
-        labelPlayer41.grid(row=rowPlayer+4, column=1, padx=(5, 10), sticky="w")
+        labelPlayer41.grid(row=rowPlayer+4, column=2, padx=(5, 10), sticky="w")
 
         labelPlayer50 = ttk.Label(self.frameShortcuts,
                                   text="Wheel", font=self.font)
-        labelPlayer50.grid(row=rowPlayer+5, column=0, padx=(10, 5), sticky="e")
+        labelPlayer50.grid(row=rowPlayer+5, column=1, padx=(10, 5), sticky="e")
         labelPlayer51 = ttk.Label(self.frameShortcuts,
                                   text="Volume up / down", font=self.font)
-        labelPlayer51.grid(row=rowPlayer+5, column=1, padx=(5, 10), sticky="w")
-
-
+        labelPlayer51.grid(row=rowPlayer+5, column=2, padx=(5, 10), sticky="w")
 
         self.gui.bind("<Key>", self.key)
         self.gui.resizable(False, False)
@@ -1091,7 +1099,6 @@ class SettingEditor():
 
 class ChannelAdd():
     def __init__(self, parent, app):
-        print(parent)
         self.parent = parent
         self.app = app
         self.channel_list = self.app.channel_list
@@ -1109,7 +1116,7 @@ class ChannelAdd():
 
         self.gui.bind("<Key>", self.key)
         self.gui.protocol("WM_DELETE_WINDOW", self.gui.destroy)
-        # self.gui.resizable(False, False)
+        self.gui.resizable(False, False)
         self.gui.attributes('-topmost', True)
 
         newChannel = Channel()
@@ -1130,7 +1137,7 @@ class ChannelAdd():
         h = self.gui.winfo_height()
         x = X+(W-w)//2
         y = Y+(H-h)//2
-        self.gui.geometry("{}x{}+{}+{}".format(w, h, x, y))
+        self.gui.geometry("+{}+{}".format(x, y))
 
     def key(self, event):
         k = event.keysym
@@ -1164,17 +1171,20 @@ class ChannelEdit():
 
         self.frameChannel.update(self.channel)
 
+        self.set_geometry()
+
+    def set_geometry(self):
         self.gui.update()
         self.gui.update_idletasks()
-        W = parent.winfo_width()
-        H = parent.winfo_height()
-        X = parent.winfo_x()
-        Y = parent.winfo_y()
+        W = self.parent.winfo_width()
+        H = self.parent.winfo_height()
+        X = self.parent.winfo_x()
+        Y = self.parent.winfo_y()
         w = self.gui.winfo_width()
         h = self.gui.winfo_height()
         x = X+(W-w)//2
         y = Y+(H-h)//2
-        self.gui.geometry("{}x{}+{}+{}".format(w, h, x, y))
+        self.gui.geometry("+{}+{}".format(x, y))
 
     def key(self, event):
         k = event.keysym

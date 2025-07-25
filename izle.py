@@ -19,7 +19,6 @@ import mpv
 
 from tkinter import font as tkFont
 from tkinter import ttk
-# from tkinter import Toplevel, PhotoImage
 from tkinter import filedialog
 from tkinter import PhotoImage
 import tkinter as tk
@@ -32,18 +31,16 @@ from copy import deepcopy
 
 # from izle_gui import ctrl, shift, ctrl_shift
 # from izle_gui import ctrl_on, ctrl_off, shift_on, shift_off
-from izle_gui import resource_path
 
 from icon_generator import IconGenerator
-# from izle_gui import FrameText, FrameChannel, Progressindicator
+
+from izle_gui import resource_path
 from izle_gui import FrameText, Progressindicator
 from izle_gui import StdoutRedirector
 from izle_gui import DialogChannelRemove, ChannelAdd, ChannelEdit
 from izle_gui import About, Shortcuts, ChannelEditor, SettingEditor
-# from channels import Channels, Channel
 from channels import Channels
 from menu import Menu
-# from channel_editor import ChannelEditor
 from settings import Settings
 
 # ----------------------------------------------------------------------------------------------
@@ -123,15 +120,11 @@ class Izle():
         self.gui.mainloop()
 
     def check_libraries(self):
-        mpv_library_path = None
         if self.gui.call('tk', 'windowingsystem') == 'x11':
             mpv_library_path = ctypes.util.find_library('mpv')
-        if self.gui.call('tk', 'windowingsystem') == 'win32':
-            mpv_library_path = ctypes.util.find_library('libmpv-2')
-        if mpv_library_path is None:
-            print("Required libraries are not found!")
-        else:
             print("Mpv library:", mpv_library_path)
+            if mpv_library_path is None:
+                print("Required libraries are not found!")
 
     def set_player(self):
         # === Player ===================================
@@ -481,12 +474,10 @@ class Izle():
         shortcuts = Shortcuts(self.gui)
         self.gui.wait_window(shortcuts.gui)
 
-
     def setting_editor(self, event):
         self.frameMenu.lower()
         settingEditor = SettingEditor(self.gui, self)
         self.gui.wait_window(settingEditor.gui)
-
 
     def channel_editor(self, event):
         self.frameMenu.lower()
@@ -533,8 +524,6 @@ class Izle():
         print("Volume:", volume)
 
     # --- Mouse event handler ------------------------------------
-    # def mouse(event):
-    #     print("Mouse:", event)
 
     def mouse_wheel(self, event):
         print("Mouse:", event)
@@ -551,11 +540,6 @@ class Izle():
     def key(self, event):
         print("Key:", event.keysym)
         ks = event.keysym
-
-        # if ks == 'q' or ks == 'Q':
-        #     self.channel_list.iChannel = self.iChannel
-        #     self.channel_list.write(self.channel_list.file_channel_list)
-        #     self.gui.destroy()
 
         if ks == 'Left':
             if self.iChannel > 0:
