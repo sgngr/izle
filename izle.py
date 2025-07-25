@@ -115,7 +115,6 @@ class Izle():
 
         # ------------------------------------------------------
         self.gui.resizable(False, False)
-        # Before main loop we
         self.gui.update_idletasks()
         self.gui.mainloop()
 
