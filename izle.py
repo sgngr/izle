@@ -123,21 +123,15 @@ class Izle():
         self.gui.mainloop()
 
     def check_libraries(self):
+        mpv_library_path = None
         if self.gui.call('tk', 'windowingsystem') == 'x11':
-            cairo_library_path = ctypes.util.find_library('cairo')
-            print("Cairo library:", cairo_library_path)
             mpv_library_path = ctypes.util.find_library('mpv')
+        if self.gui.call('tk', 'windowingsystem') == 'win32':
+            mpv_library_path = ctypes.util.find_library('libmpv-2')
+        if mpv_library_path is None:
+            print("Required libraries are not found!")
+        else:
             print("Mpv library:", mpv_library_path)
-            if mpv_library_path is None or cairo_library_path is None:
-                print("Required libraries are not found!")
-
-        # if self.gui.call('tk', 'windowingsystem') == 'win32':
-        #     cairo_library_path = ctypes.util.find_library('cairo')
-        #     print("Cairo library path:", cairo_library_path)
-        #     mpv_library_path = ctypes.util.find_library('libmpv-2')
-        #     print("Mpv library path:", mpv_library_path)
-        #     if mpv_library_path is None or cairo_library_path is None:
-        #         print("Required libraries are not found!")
 
     def set_player(self):
         # === Player ===================================
