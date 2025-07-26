@@ -111,7 +111,7 @@ class Izle():
         self.gui.bind("<q>", self.quit)
         self.gui.bind("<Q>", self.quit)
         self.frameControl.bind(
-            "<Button-1>", lambda event: self.frameMenu.lower())
+            "<Button-1>", lambda event: self.frameMenu.place_forget())
 
         # ------------------------------------------------------
         self.gui.resizable(False, False)
@@ -299,7 +299,7 @@ class Izle():
         self.canvas.grid(row=0, column=0, sticky=(tk.NS))
         self.frameControl.grid(row=1, column=0, sticky=tk.EW)
         self.frameMenu.place(x=0, y=0)
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
         
         self.gui_update()
         self.gui.attributes('-topmost', True)
@@ -406,7 +406,8 @@ class Izle():
         height = 240*self.kScale
         self.canvas['width'] = width
         self.canvas['height'] = height
-
+        self.frameMenu.place_forget()
+        
     def toggle_fs(self, event=None):
         state = False if self.gui.attributes('-fullscreen') else True
         if state:
@@ -455,7 +456,7 @@ class Izle():
         self.labelHelp.grid(column=6, row=0)
 
     def toggle_log(self, event=None):
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
         fs = True if self.gui.attributes('-fullscreen') else False
         if not fs:
             if self.showing_log:
@@ -464,22 +465,22 @@ class Izle():
                 self.show_log_widgets()
 
     def dialog_about(self, event):
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
         about = About(self.gui)
         self.gui.wait_window(about.gui)
 
     def dialog_shortcuts(self, event):
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
         shortcuts = Shortcuts(self.gui)
         self.gui.wait_window(shortcuts.gui)
 
     def setting_editor(self, event):
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
         settingEditor = SettingEditor(self.gui, self)
         self.gui.wait_window(settingEditor.gui)
 
     def channel_editor(self, event):
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
         self.player.input_commands = "cycle pause up"
         print("Channel editor running...")
         channelEditor = ChannelEditor(self.gui, self, self.channel_list)
@@ -646,7 +647,7 @@ class Izle():
         self.gui.destroy()
 
     def escape(self, event):
-        self.frameMenu.lower()
+        self.frameMenu.place_forget()
 
     def channellist_load(self, event):
         self.channel_list.iChannel = self.iChannel
