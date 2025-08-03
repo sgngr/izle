@@ -1,4 +1,5 @@
 mpv
+yt_dlp
 pillow
 lxml
 selenium
