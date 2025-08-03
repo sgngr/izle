@@ -88,9 +88,9 @@ def get_m3u8_urls(url, timeout=1, duration=60):
                 if log['method'] == 'Network.responseReceived':
                     log_type = log['params']['type']
                     if log_type == 'XHR':
-                        reponse = log['params']['response']
-                        if 'url' in reponse:
-                            url = reponse['url']
+                        response = log['params']['response']
+                        if 'url' in response:
+                            url = response['url']
                             if not url.startswith("data:") and not url.startswith("blob:"):
                                 if ".m3u8" in url:
                                     urls.add(url)
