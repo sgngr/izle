@@ -117,14 +117,18 @@ class Izle():
         self.gui.resizable(False, False)
         self.gui.update_idletasks()
         self.gui.mainloop()
-
+        
     def check_libraries(self):
+        mpv_library_path = None
         if self.gui.call('tk', 'windowingsystem') == 'x11':
             mpv_library_path = ctypes.util.find_library('mpv')
+        if self.gui.call('tk', 'windowingsystem') == 'win32':
+            mpv_library_path = ctypes.util.find_library('libmpv-2')
+        if mpv_library_path is None:
+            print("Required libraries are not found!")
+        else:
             print("Mpv library:", mpv_library_path)
-            if mpv_library_path is None:
-                print("Required libraries are not found!")
-
+    
     def set_player(self):
         # === Player ===================================
         #  Video output drivers:
