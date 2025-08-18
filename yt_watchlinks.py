@@ -20,7 +20,6 @@ from requests import exceptions
 
 import time
 
-
 class WatchLink():
     def __init__(self, title=None, href=None):
         self.title = title
@@ -103,9 +102,14 @@ def get_yt_watchlinks(url, timeout, n):
 
 if __name__ == "__main__":
 
-    # url = "https://www.youtube.com/foo/bar/videos"
-    url = "https://www.youtube.com/foo/bar/streams"
-    
+    import sys
+
+    if len(sys.argv) > 1:
+        url = sys.argv[1]
+    else:
+        # url = "https://www.youtube.com/foo/bar/videos"
+        url = "https://www.youtube.com/foo/bar/streams"
+
     timeout = 30
     maxlinks = 10
     result, watchlinks = get_yt_watchlinks(url, timeout, maxlinks)
