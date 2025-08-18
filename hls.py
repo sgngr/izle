@@ -111,7 +111,13 @@ def get_m3u8_urls(url, timeout=1, duration=60):
 
 
 if __name__ == "__main__":
-    url = "https://foobar.tv/live"
+    import sys
+
+    if len(sys.argv) > 1:
+        url = sys.argv[1]
+    else:
+        url = "https://foobar.tv/live"
+    
     result, url_list = get_m3u8_urls(url, timeout=5, duration=10)
     for url in url_list:
         print(url)
