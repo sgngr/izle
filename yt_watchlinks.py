@@ -66,9 +66,8 @@ def load_driver():
 
 def download_page(driver, url):
     print(time.strftime("%H:%M:%S", time.localtime()), "Downloading page:", url)
-    driver.get(url)  # put here your link
-
-    # scroll page down
+    driver.get(url) 
+    # Scrolling down the page
     old_position = 0
     new_position = None
     position_script = """return (window.pageYOffset !== undefined) ?
@@ -129,12 +128,10 @@ def get_yt_watchlinks(url, timeout, n):
         return result, videolinks
 
     driver.quit()
-
     return result, videolinks
 
 
 def get_yt_playlist(url, timeout, n):
-    print(url, timeout, n)
     result = True
     videolinks = list()
     driver = load_driver()
@@ -176,7 +173,6 @@ def get_yt_playlist(url, timeout, n):
         return result, videolinks
 
     driver.quit()
-
     return result, videolinks
 
 
