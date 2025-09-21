@@ -18,7 +18,7 @@ from lxml import etree as ET
 from yt_watchlinks import WatchLink
 
 from hls import get_m3u8_urls
-from yt_watchlinks import get_yt_watchlinks
+from yt_watchlinks import get_yt_watchlinks, get_yt_playlist
 
 
 class Channel():
@@ -27,6 +27,7 @@ class Channel():
         # 0: Basic
         # 1: Live stream
         # 2: Youtube watch
+        # 3: Youtube playlist
         self.name = None
         self.video = None
         self.web = None
@@ -60,8 +61,13 @@ class Channel():
         if self.web is not None:
             print("Updating watchlinks ...\nConnecting to {}".format(self.web))
             timeout = 30
-            result, watchlinks = get_yt_watchlinks(self.web, timeout,
-                                                           self.max_watchlink)
+            print("Channel type:",self.channel_type)
+            if self.channel_type == 3:
+                result, watchlinks = get_yt_playlist(self.web, timeout,
+                                                     self.max_watchlink)
+            else:
+                result, watchlinks = get_yt_watchlinks(self.web, timeout,
+                                                       self.max_watchlink)
             print("Watchlinks updated.")
             for watchlink in watchlinks:
                 print(f"  - {watchlink.title} ({watchlink.href})")
@@ -170,13 +176,13 @@ class Channels():
                 ET.SubElement(Channel, "first_last").text = "{fl}".format(
                     fl=self.channels[i].first_last)
 
-            if self.channels[i].channel_type == 2:
+            if self.channels[i].channel_type in (2, 3) :
                 ET.SubElement(Channel, "max_watchlink").text = "{m}".format(
                     m=self.channels[i].max_watchlink)
                 ET.SubElement(Channel, "i_watchlink").text = "{i}".format(
                     i=self.channels[i].iWatchlink)
 
-            if self.channels[i].channel_type == 2:
+            if self.channels[i].channel_type in (2, 3):
                 for j in range(len(self.channels[i].watchlinks)):
                     Watchlink = ET.SubElement(Channel, "watchlink")
                     ET.SubElement(Watchlink, "title").text = "{t}".format(
@@ -233,7 +239,7 @@ class Channels():
             if channel.channel_type == 1:
                 print(" {i:2d} > {n} : {u} : {w}".format(
                     i=i, n=channel.name,  u=channel.video, w=channel.web))
-            if channel.channel_type == 2:
+            if channel.channel_type in (2, 3):
                 print(" {i:2d} > {n} : {w}".format(
                     i=i, n=channel.name, w=channel.web))
                 print("      # of Watchlinks", len(channel.watchlinks))
