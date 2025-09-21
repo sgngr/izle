@@ -84,7 +84,7 @@ class Izle():
         self.kScale = self.kScale_max
         # ------------------------------------------------------
         self.showing_log = False
-        self.loglevel = 2
+        self.loglevel = 1
         # ------------------------------------------------------
         self.build_gui()
         self.channelEdit = None
@@ -117,7 +117,7 @@ class Izle():
         self.gui.resizable(False, False)
         self.gui.update_idletasks()
         self.gui.mainloop()
-        
+
     def check_libraries(self):
         mpv_library_path = None
         if self.gui.call('tk', 'windowingsystem') == 'x11':
@@ -128,7 +128,7 @@ class Izle():
             print("Required libraries are not found!")
         else:
             print("Mpv library:", mpv_library_path)
-    
+
     def set_player(self):
         # === Player ===================================
         #  Video output drivers:
@@ -387,7 +387,7 @@ class Izle():
                                           sticky=tk.W)
                 self.comboboxWatchlinks.grid_forget()
                 self.indicatorUpdateWatchlinks.grid_forget()
-            case 2:
+            case 2 | 3:
                 self.frameControl.columnconfigure(1, weight=0, minsize=360)
                 self.comboboxWatchlinks.grid(row=0, column=1,
                                              padx=2,
