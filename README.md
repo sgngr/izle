@@ -6,7 +6,7 @@
 ![ScreenShot](https://raw.githubusercontent.com/sgngr/izle/main/izle-Screenshot.png) 
 
 izle is for watching live streams and YouTube's channels. It works on Linux and Windows operating system.
-izle supports three types of video channel:
+izle supports four types of video channel:
 
 - Basic channel: Any video URL supported by mpv.
 
@@ -14,6 +14,7 @@ izle supports three types of video channel:
 
 - YouTube's channel: Watchlinks are retrieved from channel's website.
 
+- YouTube's playlist: Watchlinks are retrieved from playlist URL.
 
 ## Requirements
 
