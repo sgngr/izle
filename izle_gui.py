@@ -11,7 +11,9 @@ License:    GPL v3
 import tkinter as tk
 from tkinter import ttk
 from tkinter import font as tkFont
-from PIL import Image, ImageTk
+from PIL import (ImageTk,
+                 ImageDraw,
+                 Image)
 from tkinter import Toplevel, PhotoImage
 from tkinter import filedialog
 
@@ -185,6 +187,104 @@ class StdoutRedirector(object):
         pass
 
 
+class PlayingIndicator(ttk.Frame):
+    def __init__(self, master, **kwargs):
+        self.kwargs = kwargs
+        self.size = (16, 16)
+        self.margin = (0, 0, 0, 0)
+        self.status = False
+        self.set_color()
+
+        if 'size' in kwargs.keys():
+            self.size = kwargs['size']
+            kwargs.pop('size')
+        super().__init__(master, **kwargs)
+        self['padding'] = (0, 0, 0, 0)
+
+        self.image = self.indicator_image(size=self.size, margin=self.margin)
+        self.photoimage = ImageTk.PhotoImage(self.image)
+        self.label = ttk.Label(self, image=self.photoimage)
+        self.label.grid()
+        self.label['relief'] = 'groove'
+        self.blinking = False
+        self.on = True
+        self.indicator_thread = None
+
+    def set_color(self):
+        self.indicator_border = "black"
+        if self.status:
+            self.indicator_fill = "#1e94f1"
+        else:
+            self.indicator_fill = "white"
+
+    def start_blinking(self):
+        self.blinking = True
+        print('Indicator started.')
+        self.set_color()
+        self.on = True
+        self.indicator_thread = Thread(target=self.blink)
+        self.indicator_thread.start()
+
+    def stop_blinking(self):
+        self.blinking = False
+        print("Indicator stopped.")
+        self.set_color()
+
+    def blink(self):
+        while self.blinking:
+            if self.on:
+                time.sleep(0.3)
+            else:
+                time.sleep(0.1)
+            if self.on:
+                self.image = self.indicator_image(size=self.size,
+                                                  margin=self.margin,
+                                                  border=self.indicator_border,
+                                                  fill="white")
+            if not self.on:
+                self.image = self.indicator_image(size=self.size,
+                                                  margin=self.margin,
+                                                  border=self.indicator_border,
+                                                  fill=self.indicator_fill)
+            try:
+                self.photoimage = ImageTk.PhotoImage(self.image)
+                self.label.configure(image=self.photoimage)
+            except Exception:
+                pass
+
+            if self.on:
+                self.on = False
+            else:
+                self.on = True
+
+        self.update_indicator()
+
+    def update_indicator(self):
+        self.image = self.indicator_image(size=self.size,
+                                          margin=self.margin,
+                                          border=self.indicator_border,
+                                          fill=self.indicator_fill)
+        try:
+            self.photoimage = ImageTk.PhotoImage(self.image)
+            self.label.configure(image=self.photoimage)
+        except Exception:
+            pass
+
+    def indicator_image(self, size=(16, 16), margin=(0, 0, 0, 0),
+                        border="black", fill="white"):
+        w = size[0]+(margin[0]+margin[2])
+        h = size[1]+(margin[1]+margin[3])
+        x0 = margin[0]
+        y0 = margin[1]
+        x1 = x0 + size[0]
+        y1 = y0 + size[1]
+        image = Image.new("RGBA", (w, h))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle([x0, y0, x1, y1], fill=fill)
+        image = image.resize((w, h), Image.LANCZOS)
+        return image
+
+
 class FrameChannel(ttk.Frame):
     def __init__(self, master, **kwargs):
         self.kwargs = kwargs
@@ -238,10 +338,13 @@ class FrameChannel(ttk.Frame):
                              takefocus=False, text='Live stream')
         r3 = ttk.Radiobutton(frameType, value=2,  variable=self.channelType,
                              takefocus=False, text='Youtube watch')
+        r4 = ttk.Radiobutton(frameType, value=3,  variable=self.channelType,
+                             takefocus=False, text='Youtube playlist')
 
         r1.grid(row=0, column=1, sticky=tk.EW)
         r2.grid(row=0, column=2, sticky=tk.EW)
         r3.grid(row=0, column=3, sticky=tk.EW)
+        r4.grid(row=0, column=4, sticky=tk.EW)
 
         self.channelType.trace_add('write', self.channel_type_changed)
 
@@ -342,8 +445,10 @@ class FrameChannel(ttk.Frame):
         framePlayer.grid(row=7, column=1, padx=(
             2, 2), pady=(2, 5), sticky=tk.W)
 
-        width = 192*16/9
+        width = int(192*16/9)
         height = 192
+        self.player_width = width
+
         self.canvas = tk.Canvas(framePlayer, width=width,
                                 height=height, bg='black')
         self.canvas.grid()
@@ -360,6 +465,8 @@ class FrameChannel(ttk.Frame):
                                   input_vo_keyboard=False,
                                   log_handler=self.player_log, vo='xv,x11')
 
+        self.player.play("izle.png")
+        self.player.input_commands = "cycle pause"
         self.player.set_loglevel('error')
         canvasID = self.canvas.winfo_id()
         self.player.wid = str(canvasID)
@@ -368,18 +475,44 @@ class FrameChannel(ttk.Frame):
         if self.app.gui.call('tk', 'windowingsystem') == 'win32':
             self.canvas.bind(
                 '<MouseWheel>', lambda event: self.player_volume_up_down(event))
-            self.canvas.bind(
-                '<Button-1>', lambda event: self.player_cycle_pause(event))
+            # self.canvas.bind(
+            #     '<Button-1>', lambda event: self.player_cycle_pause(event))
         else:
-            self.player.keybind('MBTN_LEFT', "cycle pause")
+            # self.player.keybind('MBTN_LEFT', "cycle pause")
+            # self.canvas.bind(
+            #     '<Button-1>', lambda event: self.player_cycle_pause(event))
             self.player.keybind('WHEEL_UP', "add volume +5")
             self.player.keybind('WHEEL_DOWN', "add volume -5")
+        # ------------------------------------------------------
+
+        frameControl = ttk.Frame(self)
+        frameControl.grid(row=8, column=1, padx=(2, 2),
+                          pady=(2, 5), sticky=tk.W)
+
+        playingIndicator = PlayingIndicator(frameControl,
+                                            size=(self.player_width-18, 2))
+        playingIndicator.grid(row=0, column=0)
+
+        self.playingIndicator = playingIndicator
+
+        self.imgPlay = ImageTk.PhotoImage(
+            iconGenerator.play(size=18, margin=(0, 0, 0, 0)))
+        self.imgPause = ImageTk.PhotoImage(
+            iconGenerator.pause(size=18, margin=(0, 0, 0, 0)))
+
+        labelPlayPause = ttk.Label(frameControl, compound="image",
+                                   image=self.imgPlay)
+        labelPlayPause.grid(row=0, column=1)
+
+        labelPlayPause.bind('<Button-1>', self.player_cycle_pause)
+        self.labelPlayPause = labelPlayPause
+    
         # ------------------------------------------------------
         self.imgSave = ImageTk.PhotoImage(
             iconGenerator.check(size=18, margin=(0, 0, 0, 0)))
         labelSaveChannel = ttk.Label(
             self, compound="image", image=self.imgSave)
-        labelSaveChannel.grid(row=8, column=2,
+        labelSaveChannel.grid(row=9, column=2,
                               padx=(0, 10), pady=(0, 8), sticky=tk.E)
         labelSaveChannel.bind('<Button-1>', self.save_channel)
         # ------------------------------------------------------
@@ -390,6 +523,37 @@ class FrameChannel(ttk.Frame):
 
     def player_log(self, loglevel, component, message):
         print('Mini player > [{}] {}: {}'.format(loglevel, component, message))
+
+    def player_volume_up_down(self, event):
+        if event.delta > 0:
+            volume = self.player.volume
+            volume += 5
+            if volume > self.player.volume_max:
+                volume = self.player.volume_max
+            self.player.input_commands = "set volume {}".format(volume)
+        else:
+            volume = self.player.volume
+            volume -= 5
+            if volume < 0:
+                volume = 0
+            self.player.input_commands = "set volume {}".format(volume)
+
+    def player_cycle_pause(self, event):
+        if self.player.pause:
+            self.play_channel(self.channel)
+            self.player.input_commands = "cycle pause up"
+            self.playingIndicator.status = True
+            self.playingIndicator.start_blinking()
+            print("Miniplayer playing!")
+            self.labelPlayPause["image"] = self.imgPause
+            # Pause main player 
+            self.app.player.input_commands = "cycle pause"
+        else:
+            self.player.input_commands = "cycle pause"
+            self.playingIndicator.status = False
+            self.playingIndicator.stop_blinking()
+            print("Miniplayer paused!")
+            self.labelPlayPause["image"] = self.imgPlay
 
     def watchlink_changed(self, event):
         self.channel.iWatchlink = self.comboboxWatchlinks.current()
@@ -454,6 +618,22 @@ class FrameChannel(ttk.Frame):
                                              padx=(2, 15), pady=(2, 2), sticky=tk.EW)
                 self.frameUpdateWatchlinks.grid(row=6, column=1, padx=(2, 4),
                                                 pady=(2, 4), sticky=tk.EW)
+            case 3:
+                self.labelVideo.grid_forget()
+                self.entryVideo.grid_forget()
+                self.frameUpdateLiveStream.grid_forget()
+                self.frameUpdateLiveStream.grid_forget()
+                self.labelWebUrl.grid(row=2, column=0, padx=(4, 2), pady=(4, 4),
+                                      sticky=tk.E)
+                self.entryWebUrl.grid(row=2, column=1,  columnspan=4,
+                                      padx=(2, 4), pady=(2, 4), sticky=tk.EW)
+                self.labelWatchlinks.grid(row=5, column=0, padx=(4, 2),
+                                          pady=(4, 2), sticky=tk.E)
+                self.comboboxWatchlinks.grid(row=5, column=1, columnspan=4,
+                                             padx=(2, 15), pady=(2, 2), sticky=tk.EW)
+                self.frameUpdateWatchlinks.grid(row=6, column=1, padx=(2, 4),
+                                                pady=(2, 4), sticky=tk.EW)
+                
             case _:
                 pass
 
@@ -517,10 +697,6 @@ class FrameChannel(ttk.Frame):
 
         if len(self.channel.name) == 0:
             self.channel.name = "Unknown"
-        # if len(self.channel.web) == 0:
-        #     self.channel.web = None
-        # if len(self.channel.video) == 0:
-        #     self.channel.video = None
 
         print("Channel updated:")
         print("   Channel name:", self.channel.name)
@@ -553,6 +729,43 @@ class FrameChannel(ttk.Frame):
             self.app.channel_list.channels[iChannel] = self.channel
 
         self.app.gui_update()
+
+        # Pause main player 
+        self.app.player.input_commands = "cycle pause"
+        print("Player> Playig paused!")
+
+        self.play_channel(self.channel)
+
+    def play_channel(self, channel):
+
+        self.player.input_commands = "cycle pause"
+        self.playingIndicator.status = False
+        self.playingIndicator.stop_blinking()
+
+        videoURL = None
+        if channel.channel_type < 2:
+            print(
+                f"Mini player > Playing channel {channel.name} : ({channel.video})")
+            videoURL = channel.video
+        else:
+            if len(channel.watchlinks) > 0:
+                watchlink = channel.watchlinks[channel.iWatchlink]
+                videoURL = watchlink.href
+                print(
+                    f"Mini player > Playing channel {channel.name} - {watchlink.title} : ({watchlink.href})")
+
+        if videoURL is not None:
+            if len(videoURL) == 0:
+                videoURL = None
+
+        if videoURL is not None:
+            self.player["loop-playlist"] = "force"
+            self.player.play(videoURL)
+            self.player.input_commands = "cycle pause up"
+            self.playingIndicator.status = True
+            self.playingIndicator.start_blinking()
+        else:
+            print("No video URL!")
 
 
 class DialogChannelRemove(object):
@@ -653,7 +866,7 @@ class Shortcuts():
         self.frameShortcuts['relief'] = 'raised'
         self.frameShortcuts['padding'] = (5, 5, 5, 5)
 
-        self.font = tkFont.Font(family='Helvetica', size=-11, weight='normal')        
+        self.font = tkFont.Font(family='Helvetica', size=-11, weight='normal')
         self.frameShortcuts.columnconfigure(0, minsize=50)
 
         labelKeyMouse = ttk.Label(self.frameShortcuts,
@@ -772,7 +985,7 @@ class Shortcuts():
                                    text="Left", font=self.font)
         labelChannel50.grid(row=rowChannel+5, column=1, padx=(10, 5),
                             sticky="e")
-        labelChannel51 = ttk.Label(self.frameShortcuts, 
+        labelChannel51 = ttk.Label(self.frameShortcuts,
                                    text="Previous channel", font=self.font)
         labelChannel51.grid(row=rowChannel+5, column=2, padx=(5, 10),
                             sticky="w")
@@ -1115,7 +1328,7 @@ class ChannelAdd():
         self.frameChannel.grid()
 
         self.gui.bind("<Key>", self.key)
-        self.gui.protocol("WM_DELETE_WINDOW", self.gui.destroy)
+        self.gui.protocol("WM_DELETE_WINDOW", self.close)
         self.gui.resizable(False, False)
         self.gui.attributes('-topmost', True)
 
@@ -1142,7 +1355,12 @@ class ChannelAdd():
     def key(self, event):
         k = event.keysym
         if k == 'Escape':
-            self.gui.destroy()
+            self.close()
+
+    def close(self):
+        self.frameChannel.playingIndicator.status = False
+        self.frameChannel.playingIndicator.stop_blinking()
+        self.gui.destroy()
 
 
 class ChannelEdit():
@@ -1165,7 +1383,7 @@ class ChannelEdit():
         self.frameChannel.grid()
 
         self.gui.bind("<Key>", self.key)
-        self.gui.protocol("WM_DELETE_WINDOW", self.gui.destroy)
+        self.gui.protocol("WM_DELETE_WINDOW", self.close)
         self.gui.resizable(False, False)
         self.gui.attributes('-topmost', True)
 
@@ -1189,8 +1407,18 @@ class ChannelEdit():
     def key(self, event):
         k = event.keysym
         if k == 'Escape':
-            self.gui.destroy()
-
+            self.close()
+            
+    def close(self):
+        self.frameChannel.playingIndicator.status = False
+        self.frameChannel.playingIndicator.stop_blinking()
+        # Pause mini player
+        self.frameChannel.player.input_commands = "cycle pause"
+        print("Mini player > Playing paused!")
+        # Player unpause
+        self.app.player.input_commands = "cycle pause up"
+        print("Player > Playing kept on!")
+        self.gui.destroy()
 
 class ChannelEditor():
     def __init__(self, parent, app, channel_list):
@@ -1208,7 +1436,7 @@ class ChannelEditor():
         self.gui.attributes('-topmost', True)
         # ------------------------------------------------------
         # self.gui.resizable(False, False)
-        self.play_channel(self.channel)
+        # self.play_channel(self.channel)
 
     def gui_bindings(self):
         self.gui.event_add(
@@ -1285,6 +1513,7 @@ class ChannelEditor():
 
         frameChannel.update(self.channel)
         self.frameChannel = frameChannel
+        
         self.player = self.frameChannel.player
         self.canvas = self.frameChannel.canvas
 
@@ -1298,6 +1527,9 @@ class ChannelEditor():
         #     self.player.keybind('WHEEL_UP', "add volume +5")
         #     self.player.keybind('WHEEL_DOWN', "add volume -5")
         # # ------------------------------------------------------
+        
+        
+        
         frameLog = FrameText(self.gui)
         frameLog.grid(sticky=tk.EW)
         self.frameLog = frameLog
@@ -1388,23 +1620,26 @@ class ChannelEditor():
         self.player.pause = True
         self.play_channel(self.channel)
 
-    def play_channel(self, channel):
-        videoURL = None
-        if channel.channel_type < 2:
-            print(
-                f"Mini player > Playing channel {channel.name} : ({channel.video})")
-            videoURL = channel.video
-        else:
-            if len(channel.watchlinks) > 0:
-                watchlink = channel.watchlinks[channel.iWatchlink]
-                videoURL = watchlink.href
-                print(
-                    f"Mini player > Playing channel {channel.name} - {watchlink.title} : ({watchlink.href})")
-        if videoURL is not None:
-            self.player["loop-playlist"] = "force"
-            self.player.play(videoURL)
-        else:
-            print("No video URL!")
+#     def play_channel(self, channel):
+#         videoURL = None
+#         if channel.channel_type < 2:
+#             print(
+#                 f"Mini player > Playing channel {channel.name} : ({channel.video})")
+#             videoURL = channel.video
+#         else:
+#             if len(channel.watchlinks) > 0:
+#                 watchlink = channel.watchlinks[channel.iWatchlink]
+#                 videoURL = watchlink.href
+#                 print(
+#                     f"Mini player > Playing channel {channel.name} - {watchlink.title} : ({watchlink.href})")
+#         
+#         
+#         if videoURL is not None:
+#             self.player["loop-playlist"] = "force"
+#             self.player.play(videoURL)
+#         else:
+#             print("No video URL!")
+
 
     def channel_play(self):
         # self.iChannel = self.channel_list.iChannel
