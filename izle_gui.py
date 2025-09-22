@@ -608,6 +608,7 @@ class FrameChannel(ttk.Frame):
                 self.labelVideo.grid_forget()
                 self.entryVideo.grid_forget()
                 self.frameUpdateLiveStream.grid_forget()
+                self.labelWebUrl["text"] = "Web site:"
                 self.labelWebUrl.grid(row=2, column=0, padx=(4, 2), pady=(4, 4),
                                       sticky=tk.E)
                 self.entryWebUrl.grid(row=2, column=1,  columnspan=4,
@@ -623,6 +624,7 @@ class FrameChannel(ttk.Frame):
                 self.entryVideo.grid_forget()
                 self.frameUpdateLiveStream.grid_forget()
                 self.frameUpdateLiveStream.grid_forget()
+                self.labelWebUrl["text"] = "Playlist URL:"
                 self.labelWebUrl.grid(row=2, column=0, padx=(4, 2), pady=(4, 4),
                                       sticky=tk.E)
                 self.entryWebUrl.grid(row=2, column=1,  columnspan=4,
