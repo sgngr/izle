@@ -1,20 +1,20 @@
 # izle
-**mpv GUI for watching live streams and YouTube's channels**
+**mpv GUI for watching live streams and YouTube channels**
 
 ---
 
 ![ScreenShot](https://raw.githubusercontent.com/sgngr/izle/main/izle-Screenshot.png) 
 
-izle is for watching live streams and YouTube's channels. It works on Linux and Windows operating system.
-izle supports four types of video channel:
+izle is for watching live streams and YouTube's channels. It works on Linux and Windows operating systems.
+izle supports four types of video channels:
 
 - Basic channel: Any video URL supported by mpv.
 
-- HTTP live stream channel: m3u8 playlists are retrieved from channel's website.
+- HTTP live stream channel: m3u8 playlists are retrieved from the channel's website.
 
-- YouTube's channel: Watchlinks are retrieved from channel's website.
+- YouTube's channel: Watchlinks are retrieved from the channel's website.
 
-- YouTube's playlist: Watchlinks are retrieved from playlist URL.
+- YouTube's playlist: Watchlinks are retrieved from the playlist URL.
 
 ## Requirements
 
