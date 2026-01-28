@@ -45,8 +45,8 @@ izle supports four types of video channel:
     
 ## Issues
 
-- If window system use Wayland decompositor, video output may not be embedded. In this case, set the use legacy video output driver option in application settings.
+- If the window system uses the Wayland compositor, video output may not be embedded. In this case, set the Use Legacy Video Output Driver option in application settings.
 
 - Fullscreen mode may not work properly on GNOME desktop environments.
 
-- m3u8 playlists of live stream channels can not be captured for some sites.
+- m3u8 playlists of live stream channels cannot be captured for some sites. If the live stream is embedded in an inline frame, use the frame source attribute as the live stream URL.
